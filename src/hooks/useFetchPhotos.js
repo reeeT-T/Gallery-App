@@ -9,7 +9,7 @@ export default function useFetchPhotos() {
     async function fetchData() {
       try {
         const res = await fetch(
-          "https://picsum.photos/v2/list?limit=30"
+          "https://picsum.photos/v2/list?limit=150"
         )
 
         if (!res.ok) {

@@ -1,7 +1,25 @@
 import useFetchPhotos from "./hooks/useFetchPhotos"
+import { useState,useEffect } from "react"
+
+
 
 function App() {
   const { photos, loading, error } = useFetchPhotos()
+  const [search, setSearch] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [search])
+
+  const filteredPhotos = photos.filter((photo) =>
+    photo.author.toLowerCase().includes(debouncedSearch.toLowerCase())
+  )
+
 
   if (loading) {
     return (
@@ -21,12 +39,18 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-red-500 text-5xl">
-        TEST
-      </h1>
+      <div className="flex justify-center mb-6">
+        <input
+         type="text"
+         placeholder="Search by author..."
+         value={search}
+         onChange={(e) => setSearch(e.target.value)}
+         className="w-full max-w-md p-2 border rounded-lg"
+         />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {photos.map((photo) => (
+        {filteredPhotos.map((photo) => (
           <div key={photo.id} className="bg-white rounded-lg overflow-hidden shadow">
             <img
               src={`https://picsum.photos/id/${photo.id}/400/300`}
